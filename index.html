@@ -186,11 +186,7 @@
             <h2>⚙️ API 设置</h2>
             <input type="text" id="apiUrl" placeholder="API 地址">
             <input type="password" id="apiKey" placeholder="API Key">
-            <select id="model" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:10px;font-size:16px;">
-                <option value="gpt-4o-mini">GPT-4o Mini</option>
-                <option value="gpt-4o">GPT-4o</option>
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-            </select>
+            <input type="text" id="model" placeholder="模型名称（如 gpt-4o-mini、claude-3-opus）" value="gpt-4o-mini">
             <button class="save-btn" onclick="saveSettings()">保存</button>
         </div>
     </div>
@@ -354,7 +350,7 @@
             settings = {
                 apiUrl: document.getElementById('apiUrl').value.trim(),
                 apiKey: document.getElementById('apiKey').value.trim(),
-                model: document.getElementById('model').value
+                model: document.getElementById('model').value.trim() || 'gpt-4o-mini'
             };
             localStorage.setItem('ai_settings', JSON.stringify(settings));
             closeSettings();
