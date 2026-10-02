@@ -124,18 +124,25 @@
             padding: 25px;
             border-radius: 20px;
             width: 90%;
-            max-width: 350px;
+            max-width: 380px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .settings-box h2 { margin-bottom: 20px; text-align: center; }
         
-        .settings-box input {
+        .settings-box input, .settings-box select, .settings-box textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 12px;
             border: 1px solid #ddd;
             border-radius: 10px;
             font-size: 16px;
+        }
+        
+        .settings-box textarea {
+            height: 80px;
+            resize: none;
         }
         
         .save-btn {
@@ -156,6 +163,28 @@
             font-size: 30px;
             color: white;
             cursor: pointer;
+        }
+        
+        .preset-models {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .preset-models button {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: #f5f5f5;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .preset-models button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
     </style>
 </head>
@@ -184,10 +213,35 @@
         <span class="close-settings" onclick="closeSettings()">×</span>
         <div class="settings-box">
             <h2>⚙️ API 设置</h2>
-            <input type="text" id="apiUrl" placeholder="API 地址">
+            
+            <input type="text" id="apiUrl" placeholder="API 地址（如 https://api.openai.com/v1/chat/completions）">
+            
             <input type="password" id="apiKey" placeholder="API Key">
-            <input type="text" id="model" placeholder="模型名称（如 gpt-4o-mini、claude-3-opus）" value="gpt-4o-mini">
-            <button class="save-btn" onclick="saveSettings()">保存</button>
+            
+            <label style="display:block;margin-bottom:8px;color:#666;font-size:14px;">快捷选择模型：</label>
+            <div class="preset-models" id="presetModels">
+                <button onclick="selectModel('gpt-4o-mini')">GPT-4o Mini</button>
+                <button onclick="selectModel('gpt-4o')">GPT-4o</button>
+                <button onclick="selectModel('gpt-3.5-turbo')">GPT-3.5</button>
+                <button onclick="selectModel('claude-3-opus-20240229')">Claude 3 Opus</button>
+                <button onclick="selectModel('claude-3-sonnet-20240229')">Claude 3 Sonnet</button>
+                <button onclick="selectModel('claude-3-haiku-20240307')">Claude 3 Haiku</button>
+                <button onclick="selectModel('claude-4-sonnet-20250514')">Claude 4 Sonnet</button>
+                <button onclick="selectModel('claude-3-7-sonnet-20250514')">Claude 3.7 Sonnet</button>
+                <button onclick="selectModel('o3-mini')">o3 Mini</button>
+                <button onclick="selectModel('o1-mini')">o1 Mini</button>
+                <button onclick="selectModel('deepseek-chat')">DeepSeek Chat</button>
+                <button onclick="selectModel('deepseek-reasoner')">DeepSeek Reasoner</button>
+                <button onclick="selectModel('moonshot-v1-8k')">Moonshot</button>
+                <button onclick="selectModel('gemini-pro')">Gemini Pro</button>
+            </div>
+            
+            <input type="text" id="model" placeholder="自定义模型名称">
+            
+            <label style="display:block;margin-bottom:8px;color:#666;font-size:14px;">系统提示词：</label>
+            <textarea id="systemPrompt" placeholder="输入系统提示词..."></textarea>
+            
+            <button class="save-btn" onclick="saveSettings()">保存设置</button>
         </div>
     </div>
     
@@ -195,14 +249,20 @@
         let settings = JSON.parse(localStorage.getItem('ai_settings')) || {
             apiUrl: 'https://api.openai.com/v1/chat/completions',
             apiKey: '',
-            model: 'gpt-4o-mini'
+            model: 'gpt-4o-mini',
+            systemPrompt: ''
         };
         let mediaFiles = [];
         let messages = [];
         
+        // 初始化设置
         document.getElementById('apiUrl').value = settings.apiUrl;
         document.getElementById('apiKey').value = settings.apiKey;
         document.getElementById('model').value = settings.model;
+        document.getElementById('systemPrompt').value = settings.systemPrompt || '';
+        
+        // 更新快捷按钮状态
+        updatePresetButtons();
         
         document.getElementById('cameraInput').addEventListener('change', (e) => addMedia(e.target.files));
         document.getElementById('galleryInput').addEventListener('change', (e) => addMedia(e.target.files));
@@ -210,6 +270,19 @@
         document.getElementById('text').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') send();
         });
+        
+        function selectModel(modelName) {
+            document.getElementById('model').value = modelName;
+            updatePresetButtons();
+        }
+        
+        function updatePresetButtons() {
+            const buttons = document.querySelectorAll('#presetModels button');
+            const currentModel = document.getElementById('model').value;
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(currentModel.split('-')[0]));
+            });
+        }
         
         function addMedia(files) {
             Array.from(files).forEach(file => {
@@ -273,23 +346,35 @@
                     },
                     body: JSON.stringify({
                         model: settings.model,
-                        messages: messages,
-                        max_tokens: 1000
+                        messages: buildMessages(),
+                        max_tokens: 2000
                     })
                 });
                 
                 const data = await res.json();
                 hideLoading();
                 
-                const reply = data.choices[0].message.content;
-                messages.push({ role: 'assistant', content: reply });
-                addMessage(reply, [], 'ai');
+                if (data.error) {
+                    addMessage('❌ ' + data.error.message, [], 'ai');
+                } else {
+                    const reply = data.choices[0].message.content;
+                    messages.push({ role: 'assistant', content: reply });
+                    addMessage(reply, [], 'ai');
+                }
             } catch (e) {
                 hideLoading();
                 addMessage('❌ 请求失败: ' + e.message, [], 'ai');
             }
             
             sendBtn.disabled = false;
+        }
+        
+        function buildMessages() {
+            const msgs = [];
+            if (settings.systemPrompt) {
+                msgs.push({ role: 'system', content: settings.systemPrompt });
+            }
+            return msgs.concat(messages);
         }
         
         function buildContent(text, files) {
@@ -350,11 +435,18 @@
             settings = {
                 apiUrl: document.getElementById('apiUrl').value.trim(),
                 apiKey: document.getElementById('apiKey').value.trim(),
-                model: document.getElementById('model').value.trim() || 'gpt-4o-mini'
+                model: document.getElementById('model').value.trim(),
+                systemPrompt: document.getElementById('systemPrompt').value.trim()
             };
+            
+            if (!settings.model) {
+                alert('请输入模型名称');
+                return;
+            }
+            
             localStorage.setItem('ai_settings', JSON.stringify(settings));
             closeSettings();
-            addMessage('✅ 设置已保存', [], 'ai');
+            addMessage('✅ 设置已保存\n模型: ' + settings.model, [], 'ai');
         }
     </script>
 </body>
