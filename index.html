@@ -4,15 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AI 智能助手</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
             --safe-top: env(safe-area-inset-top, 0px);
@@ -20,21 +15,18 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
             height: 100dvh;
             overflow: hidden;
             touch-action: manipulation;
         }
         
-        /* 液态玻璃背景 */
         .bg-blobs {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
@@ -43,104 +35,66 @@
         .blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 15s infinite ease-in-out;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
         }
         
-        .blob:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            background: #a8edea;
-            top: 10%;
-            left: -30px;
-            animation-delay: 0s;
-        }
-        
-        .blob:nth-child(2) {
-            width: 180px;
-            height: 180px;
-            background: #fed6e3;
-            top: 50%;
-            right: -20px;
-            animation-delay: -5s;
-        }
-        
-        .blob:nth-child(3) {
-            width: 150px;
-            height: 150px;
-            background: #ffecd2;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -10s;
-        }
+        .blob:nth-child(1) { width: 200px; height: 200px; background: #a8edea; top: 10%; left: -20px; }
+        .blob:nth-child(2) { width: 180px; height: 180px; background: #fed6e3; top: 40%; right: -20px; animation-delay: -7s; }
+        .blob:nth-child(3) { width: 150px; height: 150px; background: #ffecd2; bottom: 10%; left: 20%; animation-delay: -14s; }
         
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(30px, -20px) scale(1.05); }
-            50% { transform: translate(-15px, 30px) scale(0.95); }
-            75% { transform: translate(-30px, -10px) scale(1.02); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 30px) scale(0.95); }
         }
         
-        /* 主容器 */
         .container {
             position: relative;
             z-index: 1;
+            height: 100vh;
             height: 100dvh;
             display: flex;
             flex-direction: column;
-            background: rgba(255, 255, 255, 0.1);
         }
         
-        /* 头部 */
         .header {
             padding: calc(12px + var(--safe-top)) 16px 12px;
             text-align: center;
+            background: rgba(255,255,255,0.2);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.25);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
             flex-shrink: 0;
         }
         
         .header h1 {
             font-size: 22px;
-            font-weight: 600;
             color: #fff;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            letter-spacing: 0.5px;
+            font-weight: 600;
         }
         
         .header .subtitle {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255,255,255,0.8);
             margin-top: 2px;
         }
         
-        /* 设置按钮 */
         .settings-btn {
             position: absolute;
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255,255,255,0.3);
             border: none;
             border-radius: 50%;
             width: 36px;
             height: 36px;
             font-size: 18px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.2s;
         }
         
-        .settings-btn:active {
-            transform: translateY(-50%) scale(0.9);
-            background: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* 聊天区域 */
         .chat-area {
             flex: 1;
             overflow-y: auto;
@@ -150,40 +104,35 @@
             flex-direction: column;
             gap: 12px;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
         }
         
         .message {
             max-width: 85%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: 18px;
             font-size: 15px;
             line-height: 1.5;
             word-wrap: break-word;
-            animation: messageIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: messageIn 0.3s ease;
         }
         
         @keyframes messageIn {
-            from { opacity: 0; transform: translateY(12px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .message.user {
             align-self: flex-end;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            border-bottom-right-radius: 6px;
             color: #fff;
-            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+            border-bottom-right-radius: 6px;
         }
         
         .message.ai {
             align-self: flex-start;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom-left-radius: 6px;
+            background: rgba(255,255,255,0.9);
             color: #333;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border-bottom-left-radius: 6px;
         }
         
         .message img, .message video {
@@ -193,79 +142,66 @@
             display: block;
         }
         
-        .message .image-grid {
+        .image-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 4px;
             margin-top: 8px;
         }
         
-        .message .image-grid img {
+        .image-grid img {
             width: 100%;
-            height: 120px;
+            height: 100px;
             object-fit: cover;
+            border-radius: 8px;
         }
         
-        .message .image-grid.single img {
-            height: auto;
-            max-height: 300px;
-        }
-        
-        /* 输入区域 */
         .input-area {
             padding: 12px 16px calc(12px + var(--safe-bottom));
+            background: rgba(255,255,255,0.25);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.35);
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255,255,255,0.3);
             flex-shrink: 0;
         }
         
-        /* 预览区域 */
         .preview-area {
             display: flex;
             gap: 8px;
             overflow-x: auto;
             padding: 8px 0;
             margin-bottom: 8px;
-            -webkit-overflow-scrolling: touch;
         }
         
-        .preview-area::-webkit-scrollbar {
-            display: none;
-        }
+        .preview-area::-webkit-scrollbar { display: none; }
         
         .preview-item {
             position: relative;
             flex-shrink: 0;
-            width: 70px;
-            height: 70px;
+            width: 64px;
+            height: 64px;
         }
         
         .preview-item img, .preview-item video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.5);
         }
         
         .preview-remove {
             position: absolute;
             top: -6px;
             right: -6px;
-            background: rgba(255, 59, 48, 0.9);
+            background: #ff3b30;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            color: white;
-            font-size: 14px;
+            width: 20px;
+            height: 20px;
+            color: #fff;
+            font-size: 12px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
         }
         
         .input-row {
@@ -278,12 +214,9 @@
             flex: 1;
             display: flex;
             align-items: flex-end;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255,255,255,0.85);
             border-radius: 24px;
-            padding: 8px 10px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 8px 12px;
         }
         
         .input-wrapper textarea {
@@ -291,16 +224,10 @@
             border: none;
             background: transparent;
             font-size: 16px;
-            line-height: 1.4;
             resize: none;
             max-height: 100px;
             outline: none;
             padding: 4px 6px;
-            color: #333;
-        }
-        
-        .input-wrapper textarea::placeholder {
-            color: #999;
         }
         
         .input-actions {
@@ -316,168 +243,104 @@
             cursor: pointer;
             padding: 6px;
             border-radius: 50%;
-            transition: all 0.15s;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
         }
         
-        .action-btn:active {
-            background: rgba(0, 0, 0, 0.1);
-            transform: scale(0.9);
-        }
+        .action-btn:active { background: rgba(0,0,0,0.1); }
         
         .send-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
             border-radius: 50%;
             width: 48px;
             height: 48px;
-            color: white;
+            color: #fff;
             font-size: 20px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             flex-shrink: 0;
         }
         
-        .send-btn:active {
-            transform: scale(0.92);
-        }
-        
-        .send-btn:disabled {
-            opacity: 0.5;
-            transform: none;
-        }
+        .send-btn:active { transform: scale(0.95); }
+        .send-btn:disabled { opacity: 0.5; }
         
         /* 设置面板 */
         .settings-panel {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             z-index: 100;
             display: none;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
         
-        .settings-panel.active {
-            display: flex;
-        }
+        .settings-panel.active { display: flex; }
         
         .settings-content {
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 24px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
             padding: 24px;
-            width: 100%;
-            max-width: 360px;
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            position: relative;
-            animation: slideUp 0.3s ease;
+            width: 90%;
+            max-width: 340px;
         }
         
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .settings-content h2 { margin-bottom: 20px; font-size: 18px; text-align: center; }
         
-        .settings-content h2 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 18px;
-            text-align: center;
-        }
-        
-        .setting-item {
-            margin-bottom: 14px;
-        }
+        .setting-item { margin-bottom: 14px; }
         
         .setting-item label {
             display: block;
             margin-bottom: 6px;
             color: #666;
             font-size: 13px;
-            font-weight: 500;
         }
         
         .setting-item input, .setting-item select {
             width: 100%;
-            padding: 12px 14px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border: 1px solid #e0e0e0;
             border-radius: 12px;
             font-size: 15px;
-            background: rgba(255, 255, 255, 0.7);
-            color: #333;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        
-        .setting-item input:focus, .setting-item select:focus {
-            border-color: #667eea;
+            background: #fff;
         }
         
         .save-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
-            border-radius: 14px;
-            color: white;
+            border-radius: 12px;
+            color: #fff;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .save-btn:active {
-            transform: scale(0.98);
         }
         
         .close-btn {
             position: absolute;
             top: 16px;
             right: 16px;
-            background: rgba(0, 0, 0, 0.05);
+            background: none;
             border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 18px;
+            font-size: 24px;
             cursor: pointer;
-            color: #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
-        /* 隐藏的文件输入 */
-        #fileInput, #cameraInput {
-            display: none;
-        }
+        #cameraInput, #fileInput { display: none; }
         
-        /* 加载动画 */
         .typing-indicator {
             display: flex;
             gap: 5px;
             padding: 14px 18px;
             align-self: flex-start;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
+            background: rgba(255,255,255,0.9);
             border-radius: 18px;
             border-bottom-left-radius: 6px;
         }
@@ -498,31 +361,24 @@
             30% { transform: translateY(-8px); }
         }
         
-        /* 语音录制状态 */
-        .recording {
-            animation: pulse 1s infinite;
-            color: #ff4444 !important;
-        }
+        .recording { animation: pulse 1s infinite; color: #ff3b30 !important; }
         
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.15); }
         }
         
-        /* 错误提示 */
         .error-tip {
             align-self: center;
-            background: rgba(255, 59, 48, 0.15);
+            background: rgba(255,59,48,0.15);
             color: #d32f2f;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 13px;
-            margin: 8px 0;
         }
     </style>
 </head>
 <body>
-    <!-- 液态玻璃背景 -->
     <div class="bg-blobs">
         <div class="blob"></div>
         <div class="blob"></div>
@@ -530,58 +386,52 @@
     </div>
     
     <div class="container">
-        <!-- 头部 -->
         <div class="header">
             <h1>🤖 AI 智能助手</h1>
-            <div class="subtitle">支持图片 · 语音 · 视频</div>
-            <button class="settings-btn" onclick="openSettings()" aria-label="设置">⚙️</button>
+            <div class="subtitle">文字 · 图片 · 语音 · 视频</div>
+            <button class="settings-btn" onclick="openSettings()">⚙️</button>
         </div>
         
-        <!-- 聊天区域 -->
         <div class="chat-area" id="chatArea">
             <div class="message ai">
-                你好！我是 AI 助手，有什么可以帮你的吗？可以发文字、图片、视频或语音哦～ 🎯
+                你好！我是 AI 助手，有什么可以帮你的吗？支持发送文字、图片、视频和语音哦～ 🎯
             </div>
         </div>
         
-        <!-- 输入区域 -->
         <div class="input-area">
-            <!-- 预览区域 -->
             <div class="preview-area" id="previewArea"></div>
             
             <div class="input-row">
                 <div class="input-wrapper">
-                    <textarea id="messageInput" rows="1" placeholder="输入消息..." aria-label="输入消息"></textarea>
+                    <textarea id="messageInput" rows="1" placeholder="输入消息..."></textarea>
                     <div class="input-actions">
-                        <!-- 相机按钮 -->
-                        <button class="action-btn" onclick="triggerCamera()" title="拍照" aria-label="拍照">📷</button>
-                        <!-- 相册按钮 -->
-                        <button class="action-btn" onclick="triggerGallery()" title="选择媒体" aria-label="选择媒体">🖼️</button>
-                        <!-- 语音按钮 -->
-                        <button class="action-btn" id="voiceBtn" onclick="toggleVoice()" title="语音输入" aria-label="语音输入">🎤</button>
+                        <!-- 关键：capture="environment" 强制调用后置摄像头 -->
+                        <button class="action-btn" onclick="triggerCamera()" title="拍照">📷</button>
+                        <!-- 关键：accept 支持图片和视频，multiple 支持多选 -->
+                        <button class="action-btn" onclick="triggerGallery()" title="相册">🖼️</button>
+                        <button class="action-btn" id="voiceBtn" onclick="toggleVoice()" title="语音">🎤</button>
                     </div>
                 </div>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送">➤</button>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
             </div>
         </div>
     </div>
     
-    <!-- 隐藏的文件输入 -->
+    <!-- 核心修改：capture="environment" 强制后置摄像头，multiple 支持多选 -->
     <input type="file" id="cameraInput" accept="image/*;capture=environment" multiple>
     <input type="file" id="fileInput" accept="image/*,video/*" multiple>
     
-    <!-- 设置面板 -->
     <div class="settings-panel" id="settingsPanel">
-        <div class="settings-content">
+        <div class="settings-content" style="position:relative;">
             <button class="close-btn" onclick="closeSettings()">✕</button>
             <h2>⚙️ API 设置</h2>
             <div class="setting-item">
                 <label>API 地址</label>
-                <input type="url" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions">
+                <input type="text" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions">
             </div>
             <div class="setting-item">
                 <label>API Key</label>
-                <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off">
+                <input type="password" id="apiKey" placeholder="sk-...">
             </div>
             <div class="setting-item">
                 <label>模型</label>
@@ -596,7 +446,6 @@
     </div>
     
     <script>
-        // 全局状态
         let settings = JSON.parse(localStorage.getItem('ai_settings')) || {
             apiUrl: 'https://api.openai.com/v1/chat/completions',
             apiKey: '',
@@ -608,32 +457,27 @@
         let isLoading = false;
         let messageHistory = [];
         
-        // 初始化
         function init() {
             document.getElementById('apiUrl').value = settings.apiUrl;
             document.getElementById('apiKey').value = settings.apiKey;
             document.getElementById('model').value = settings.model;
             
-            // 自动调整输入框高度
             const textarea = document.getElementById('messageInput');
             textarea.addEventListener('input', autoResize);
-            textarea.addEventListener('keydown', handleKeyDown);
+            textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
             
-            // 文件输入
+            // 关键：同时监听 cameraInput 和 fileInput
             document.getElementById('cameraInput').addEventListener('change', handleFiles);
             document.getElementById('fileInput').addEventListener('change', handleFiles);
             
-            // 点击面板外部关闭
             document.getElementById('settingsPanel').addEventListener('click', function(e) {
                 if (e.target === this) closeSettings();
             });
-            
-            // 防止页面滚动反弹
-            document.body.addEventListener('touchmove', function(e) {
-                if (!e.target.closest('.chat-area') && !e.target.closest('.preview-area')) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
         }
         
         function autoResize() {
@@ -642,14 +486,7 @@
             textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
         }
         
-        function handleKeyDown(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        }
-        
-        // 触发相机（直接调用后置摄像头）
+        // 触发相机 - 直接点击 input
         function triggerCamera() {
             document.getElementById('cameraInput').click();
         }
@@ -659,28 +496,34 @@
             document.getElementById('fileInput').click();
         }
         
-        // 处理文件选择
+        // 处理文件 - 支持多图多视频
         function handleFiles(e) {
             const files = Array.from(e.target.files);
+            console.log('选择文件:', files.length, '个');
+            
             files.forEach(file => {
+                console.log('处理文件:', file.name, file.type);
+                
                 if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
                     const reader = new FileReader();
                     reader.onload = function(event) {
+                        const fileType = file.type.startsWith('video/') ? 'video' : 'image';
                         mediaFiles.push({
-                            type: file.type.startsWith('video/') ? 'video' : 'image',
+                            type: fileType,
                             data: event.target.result,
-                            name: file.name,
-                            size: file.size
+                            name: file.name
                         });
                         updatePreview();
+                        console.log('当前媒体数量:', mediaFiles.length);
                     };
                     reader.readAsDataURL(file);
                 }
             });
+            
+            // 关键：清空 input 以允许重复选择同一文件
             e.target.value = '';
         }
         
-        // 更新预览
         function updatePreview() {
             const previewArea = document.getElementById('previewArea');
             previewArea.innerHTML = mediaFiles.map((file, index) => `
@@ -689,19 +532,17 @@
                         ? `<video src="${file.data}" muted playsinline></video>`
                         : `<img src="${file.data}" alt="${file.name}">`
                     }
-                    <button class="preview-remove" onclick="removeMedia(${index})" aria-label="删除">✕</button>
+                    <button class="preview-remove" onclick="removeMedia(${index})">✕</button>
                 </div>
             `).join('');
             previewArea.scrollLeft = previewArea.scrollWidth;
         }
         
-        // 移除媒体
         function removeMedia(index) {
             mediaFiles.splice(index, 1);
             updatePreview();
         }
         
-        // 发送消息
         async function sendMessage() {
             if (isLoading) return;
             
@@ -710,42 +551,36 @@
             
             if (!message && mediaFiles.length === 0) return;
             
+            console.log('发送消息:', message, '媒体数:', mediaFiles.length);
+            
             isLoading = true;
             const sendBtn = document.getElementById('sendBtn');
             sendBtn.disabled = true;
             
-            // 保存用户消息到历史
+            // 保存历史
             messageHistory.push({
                 role: 'user',
                 content: buildContent(message, mediaFiles)
             });
             
-            // 显示用户消息
             addMessage(message, [...mediaFiles], 'user');
             
-            // 清空输入
             input.value = '';
             input.style.height = 'auto';
             mediaFiles = [];
             updatePreview();
             
-            // 显示加载状态
             showLoading();
             
             try {
                 const response = await callAI();
                 hideLoading();
                 
-                // 保存 AI 回复到历史
-                messageHistory.push({
-                    role: 'assistant',
-                    content: response
-                });
-                
+                messageHistory.push({ role: 'assistant', content: response });
                 addMessage(response, [], 'ai');
             } catch (error) {
                 hideLoading();
-                showError(error.message || '请求失败，请检查网络和 API 设置');
+                showError(error.message || '请求失败');
                 console.error('API 错误:', error);
             }
             
@@ -753,7 +588,6 @@
             sendBtn.disabled = false;
         }
         
-        // 构建消息内容
         function buildContent(text, files) {
             let content = [];
             
@@ -772,12 +606,11 @@
                 content.push({ type: 'text', text: '请描述这些图片的内容' });
             }
             
-            return content.length === 1 && typeof content[0] === 'string' ? content[0] : content;
+            return content.length === 1 ? content[0] : content;
         }
         
-        // 调用 AI API
         async function callAI() {
-            const systemPrompt = localStorage.getItem('system_prompt') || '你是一个 helpful 的 AI 助手。请用简洁友好的方式回答问题。';
+            const systemPrompt = localStorage.getItem('system_prompt') || '你是一个有用的AI助手。';
             
             const messages = [
                 { role: 'system', content: systemPrompt },
@@ -805,14 +638,13 @@
                 } catch (e) {
                     errorData = {};
                 }
-                throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(errorData.error?.message || `HTTP ${response.status}`);
             }
             
             const data = await response.json();
-            return data.choices?.[0]?.message?.content || '抱歉，没有收到有效回复';
+            return data.choices?.[0]?.message?.content || '抱歉，没有收到回复';
         }
         
-        // 添加消息到聊天
         function addMessage(text, files, sender) {
             const chatArea = document.getElementById('chatArea');
             const messageDiv = document.createElement('div');
@@ -820,28 +652,26 @@
             
             let html = '';
             
-            // 添加媒体
             if (files && files.length > 0) {
                 if (files.length === 1) {
                     const file = files[0];
                     if (file.type === 'video') {
-                        html += `<video src="${file.data}" controls playsinline style="max-width:100%;border-radius:12px;margin-top:8px;max-height:300px;"></video>`;
+                        html += `<video src="${file.data}" controls playsinline style="max-width:100%;border-radius:12px;margin-top:8px;"></video>`;
                     } else {
-                        html += `<img src="${file.data}" style="max-width:100%;border-radius:12px;margin-top:8px;" loading="lazy">`;
+                        html += `<img src="${file.data}" style="max-width:100%;border-radius:12px;margin-top:8px;">`;
                     }
                 } else {
                     const imageFiles = files.filter(f => f.type === 'image');
                     if (imageFiles.length > 0) {
-                        html += `<div class="image-grid ${files.length === imageFiles.length ? 'single' : ''}">`;
+                        html += '<div class="image-grid">';
                         imageFiles.forEach(file => {
-                            html += `<img src="${file.data}" loading="lazy">`;
+                            html += `<img src="${file.data}">`;
                         });
                         html += '</div>';
                     }
                 }
             }
             
-            // 添加文字
             if (text) {
                 html += `<div>${formatText(text)}</div>`;
             }
@@ -851,17 +681,6 @@
             scrollToBottom();
         }
         
-        // 显示错误
-        function showError(text) {
-            const chatArea = document.getElementById('chatArea');
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-tip';
-            errorDiv.textContent = '❌ ' + text;
-            chatArea.appendChild(errorDiv);
-            scrollToBottom();
-        }
-        
-        // 格式化文本
         function formatText(text) {
             if (!text) return '';
             return text
@@ -874,7 +693,6 @@
                 .replace(/\n/g, '<br>');
         }
         
-        // 滚动到底部
         function scrollToBottom() {
             const chatArea = document.getElementById('chatArea');
             setTimeout(() => {
@@ -882,7 +700,6 @@
             }, 50);
         }
         
-        // 显示加载状态
         function showLoading() {
             const chatArea = document.getElementById('chatArea');
             const loading = document.createElement('div');
@@ -893,18 +710,25 @@
             scrollToBottom();
         }
         
-        // 隐藏加载状态
         function hideLoading() {
             const loading = document.getElementById('loading');
             if (loading) loading.remove();
         }
         
-        // 语音输入
+        function showError(text) {
+            const chatArea = document.getElementById('chatArea');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-tip';
+            errorDiv.textContent = '❌ ' + text;
+            chatArea.appendChild(errorDiv);
+            scrollToBottom();
+        }
+        
         function toggleVoice() {
             const VoiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!VoiceRecognition) {
-                alert('您的浏览器不支持语音识别，请使用 Chrome 或 Safari');
+                alert('您的浏览器不支持语音识别，请使用 Safari 或 Chrome');
                 return;
             }
             
@@ -932,9 +756,7 @@
                     isRecording = false;
                     document.getElementById('voiceBtn').classList.remove('recording');
                     
-                    if (event.error === 'no-speech') {
-                        showError('未检测到语音，请重试');
-                    } else if (event.error === 'not-allowed') {
+                    if (event.error === 'not-allowed') {
                         showError('请允许麦克风权限');
                     }
                 };
@@ -953,47 +775,29 @@
             }
         }
         
-        // 打开设置
         function openSettings() {
             document.getElementById('settingsPanel').classList.add('active');
         }
         
-        // 关闭设置
         function closeSettings() {
             document.getElementById('settingsPanel').classList.remove('active');
         }
         
-        // 保存设置
         function saveSettings() {
             const apiUrl = document.getElementById('apiUrl').value.trim();
             const apiKey = document.getElementById('apiKey').value.trim();
             const model = document.getElementById('model').value;
             
-            if (!apiUrl) {
-                alert('请输入 API 地址');
-                return;
-            }
-            if (!apiKey) {
-                alert('请输入 API Key');
-                return;
-            }
+            if (!apiUrl) { alert('请输入 API 地址'); return; }
+            if (!apiKey) { alert('请输入 API Key'); return; }
             
             settings = { apiUrl, apiKey, model };
             localStorage.setItem('ai_settings', JSON.stringify(settings));
             
             closeSettings();
-            
-            // 显示保存成功提示
-            const chatArea = document.getElementById('chatArea');
-            const tip = document.createElement('div');
-            tip.className = 'message ai';
-            tip.textContent = '✅ 设置已保存！';
-            chatArea.appendChild(tip);
-            scrollToBottom();
-            setTimeout(() => tip.remove(), 2000);
+            showError('✅ 设置已保存');
         }
         
-        // 页面加载完成
         init();
     </script>
 </body>
